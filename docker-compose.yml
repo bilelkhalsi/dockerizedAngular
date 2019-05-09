@@ -1,0 +1,32 @@
+version: "3.3"
+
+services:
+  web-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      bash -c "ls /dist/app
+      && npm -v
+      && npm run build"
+    volumes:
+      - distFront:/dist/app
+      - type: bind
+        source: ./app/src
+        target: /app/src
+  nginx:
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - web-build
+    volumes:
+        - distFront:/var/www/html
+    ports:
+      - "4200:80"
+    networks:
+      - nginx
+volumes:
+  distFront:
+networks:
+  nginx:
