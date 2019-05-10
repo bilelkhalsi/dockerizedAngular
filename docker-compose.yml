@@ -5,24 +5,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: >
-      bash -c "npm -v
-      && npm run build
-      && ls dist/app"
-
+    command: npm run build
+    volumes:
+      - distFront:/app/dist/app
   nginx:
     build:
       context: .
       dockerfile: Dockerfile.nginx
-    depends_on:
-      - dist
     volumes:
-      - ./dist/app:/var/www/html
+      - distFront:/var/www/html
     ports:
       - "4200:80"
     networks:
       - nginx
 volumes:
-  distFront:
+  distFront: {}
 networks:
   nginx:
